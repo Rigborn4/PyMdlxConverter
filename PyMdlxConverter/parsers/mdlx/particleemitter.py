@@ -45,9 +45,9 @@ class ParticleEmitter(GenericObject):
     def read_mdl(self, stream: TokenStream, version=None):
         for token in super().read_generic_block(stream):
             if token == 'EmitterUsesMDL':
-                self.flags |= 0x8000
+                self.flags = 0x8000
             elif token == 'EmitterUsesTGA':
-                self.flags |= 0x10000
+                self.flags = 0x10000
             elif token == 'static EmissionRate':
                 self.emission_rate = stream.read_float()
             elif token == 'EmissionRate':
@@ -84,9 +84,9 @@ class ParticleEmitter(GenericObject):
     def write_mdl(self, stream: TokenStream, version=None):
         stream.start_object_block('ParticleEmitter', self.name)
         self.write_generic_header(stream)
-        if self.flags & 0x8000:
+        if self.flags == 0x8000:
             stream.write_flag('EmitterUsesMDL')
-        if self.flags & 0x10000:
+        if self.flags == 0x10000:
             stream.write_flag('EmitterUsesTGA')
         if not self.write_animation(stream, 'KPEE'):
             stream.write_number_attrib('static EmissionRate', self.emission_rate)
@@ -102,7 +102,7 @@ class ParticleEmitter(GenericObject):
             stream.write_number_attrib('static LifeSpan', self.life_span)
         if not self.write_animation(stream, 'KPES'):
             stream.write_number_attrib('static InitVelocity', self.speed)
-        if ((self.flags & 0x8000) or (self.flags & 0x10000)):
+        if (self.flags == 0x8000) or (self.flags == 0x10000):
             stream.write_string_attrib('Path', self.path)
         stream.end_block()
         self.write_generic_animations(stream)
