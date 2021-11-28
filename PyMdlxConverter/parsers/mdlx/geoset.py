@@ -198,12 +198,8 @@ class Geoset(object):
             stream.write_vector_array_block('Tangents', self.tangents, 4)
         if version > 800 or len(self.skin):
             stream.start_block('SkinWeights', len(self.skin) // 8)
-            i = 0
-            while i < len(self.skin):
-                data = [str(i) for i in self.skin[i:i + 8]]
-                data = ", ".join(data)
-                stream.write_line(f'{data},')
-                i += 8
+            for i in range(0, len(self.skin), 8):
+                stream.write_line(f'{", ".join([str(a) for a in self.skin[i:i + 8]])+","}')
         else:
             stream.start_block('VertexGroup', None)
             for i in range(len(self.vertex_groups)):

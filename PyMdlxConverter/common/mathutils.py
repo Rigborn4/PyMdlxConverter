@@ -83,17 +83,9 @@ def float_decimals(num, precision):
 
 
 def float_array_decimals(arr, precision):
-    data = []
-    for i in arr:
-        if isinstance(i, int):
-            data.append(i)
-        else:
-            if i == 0.00 or i == 1.00:
-                data.append(int(str(i[0:1])))
-            else:
-                data.append(float_decimals(i, precision))
-    values = ', '.join(str(v) for v in data)
+    data = [str(i) if isinstance(i, int) else str(i) if i == 0.00 or i == 1.00 else float_decimals(i,
+                                                                                                    precision)
+            for i in \
+            arr]
+    values = ', '.join(data)
     return values
-
-
-

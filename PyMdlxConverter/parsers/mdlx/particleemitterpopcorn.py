@@ -49,11 +49,11 @@ class ParticleEmitterPopcorn(GenericObject):
     def read_mdl(self, stream: TokenStream):
         for token in super().read_generic_block(stream):
             if token == 'SortPrimsFarZ':
-                self.flags |= 0x10000
+                self.flags = 0x10000
             elif token == 'Unshaded':
-                self.flags |= 0x8000
+                self.flags = 0x8000
             elif token == 'Unfogged':
-                self.flags |= 0x40000
+                self.flags = 0x40000
             elif token == 'static LifeSpan':
                 self.life_span = stream.read_float()
             elif token == 'LifeSpan':
@@ -88,11 +88,11 @@ class ParticleEmitterPopcorn(GenericObject):
     def write_mdl(self, stream: TokenStream, version=None):
         stream.start_object_block('ParticleEmitterPopcorn', self.name)
         self.write_generic_header(stream)
-        if self.flags & 0x10000:
+        if self.flags == 0x10000:
             stream.write_flag('SortPrimsFarZ')
-        if self.flags & 0x8000:
+        if self.flags == 0x8000:
             stream.write_flag('Unshaded')
-        if self.flags & 0x40000:
+        if self.flags == 0x40000:
             stream.write_flag('Unfogged')
         if not self.write_animation(stream, 'KPPL'):
             stream.write_number_attrib('static LifeSpan', self.life_span)

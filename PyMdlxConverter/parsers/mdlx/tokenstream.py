@@ -1,13 +1,17 @@
 from PyMdlxConverter.common.mathutils import float_decimals, float_array_decimals
 
+TAB = '\t'
+NEWLINE = '\n'
 
 class TokenStream(object):
 
     def __init__(self, buffer: str = None):
         self.buffer = buffer or ''
+        self.mdl_buffer = []
         self.index = 0
         self.precision = 1000000   # 6 digits after the decimal point
         self.ident = 0
+        self.tmp_file = None
 
     def read_token(self):
         buffer = self.buffer
@@ -128,8 +132,7 @@ class TokenStream(object):
             self.buffer += '//'+i+'\n'
 
     def write_line(self, line):
-        t = '\t'
-        self.buffer += f"{t * self.ident}{line}\n"
+        self.tmp_file.write(f"{TAB * self.ident}{line}{NEWLINE}")
 
     def write_flag(self, flag):
         self.write_line(f'{flag},')
@@ -193,3 +196,4 @@ class TokenStream(object):
 
     def unindent(self):
         self.ident -= 1
+
