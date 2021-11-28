@@ -1,3 +1,5 @@
+import os
+
 from PyMdlxConverter.common.binarystream import BinaryStream
 from PyMdlxConverter.parsers.mdlx.tokenstream import TokenStream
 from PyMdlxConverter.parsers.mdlx.extent import Extent
@@ -24,6 +26,7 @@ from PyMdlxConverter.parsers.errors import TokenStreamError
 from typing import Union
 from datetime import datetime
 from dateutil.tz import tzlocal
+import atexit
 
 
 class Model(object):
@@ -59,8 +62,7 @@ class Model(object):
         self.bind_pose = []
         self.unknown_chunks = []
         self.mdl_num_of_chunk = []
-        self.mdl_comment = ["This model was converted from Mdlx by Rigborn's Python MDLX API",
-                              "Saved by Rigborn's MDLX Converter on "]
+        self.mdl_comment = [""]
 
     @staticmethod
     def get_current_date_with_time_format():
@@ -388,6 +390,8 @@ class Model(object):
 
     def save_mdl(self, comment=None):
         stream = TokenStream()
+        tmp_file = open('tmp.data', 'a')
+        stream.tmp_file = tmp_file
         if comment:
             #  comment[-1:] += Model.get_current_date_with_time_format()
             stream.write_comment(comment)
@@ -416,6 +420,10 @@ class Model(object):
         if self.version > 800:
             self.save_objects(stream, self.face_effects)
             self.save_bind_pose_block(stream)
+        stream.tmp_file.close()
+        with open('tmp.data', 'r') as f:
+            stream.buffer = f.read()
+        os.remove('tmp.data')
         return stream.buffer
 
     def save_version_block(self, stream: TokenStream):
