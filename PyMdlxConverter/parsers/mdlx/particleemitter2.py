@@ -100,17 +100,17 @@ class ParticleEmitter2(GenericObject):
     def read_mdl(self, stream: TokenStream):
         for token in super().read_generic_block(stream):
             if token == 'SortPrimsFarZ':
-                self.flags |= 0x10000
+                self.flags = self.flags or 0x10000
             elif token == 'Unshaded':
-                self.flags |= 0x8000
+                self.flags = self.flags or 0x8000
             elif token == 'LineEmitter':
-                self.flags |= 0x20000
+                self.flags = self.flags or 0x20000
             elif token == 'Unfogged':
-                self.flags |= 0x40000
+                self.flags = self.flags or 0x40000
             elif token == 'ModelSpace':
-                self.flags |= 0x80000
+                self.flags = self.flags or 0x80000
             elif token == 'XYQuad':
-                self.flags |= 0x100000
+                self.flags = self.flags or 0x100000
             elif token == 'static Speed':
                 self.speed = stream.read_float()
             elif token == 'Speed':
@@ -199,17 +199,17 @@ class ParticleEmitter2(GenericObject):
     def write_mdl(self, stream: TokenStream, version=None):
         stream.start_object_block('ParticleEmitter2', self.name)
         self.write_generic_header(stream)
-        if self.flags & 0x10000:
+        if self.flags == 0x10000:
             stream.write_flag('SortPrimsFarZ')
-        if self.flags & 0x8000:
+        if self.flags == 0x8000:
             stream.write_flag('Unshaded')
-        if self.flags & 0x20000:
+        if self.flags == 0x20000:
             stream.write_flag('LineEmitter')
-        if self.flags & 0x40000:
+        if self.flags == 0x40000:
             stream.write_flag('Unfogged')
-        if self.flags & 0x80000:
+        if self.flags == 0x80000:
             stream.write_flag('ModelSpace')
-        if self.flags & 0x100000:
+        if self.flags == 0x100000:
             stream.write_flag('XYQuad')
         if not self.write_animation(stream, 'KP2S'):
             stream.write_number_attrib('static Speed', self.speed)
